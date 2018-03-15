@@ -1,0 +1,105 @@
+
+#@{DOCKER_GRAPH_PATH}=/var/lib/docker
+#@{MOUNT_POINT_AUFS_DOCKER}=/var/lib/docker/aufs/mnt
+#@{CGROUP_SUBSYSTEMS}={blkio,cpu,cpuacct,cpuset,devices,freezer,hugetlb,memory,net_cls,net_prio,perf_event,pids,systemd}
+#@{ETC_FILES}={console,hostname,hosts,resolv.conf}
+#@{DEVICE_FOLDERS}={mqueue,pts,shm}
+#@{CONTAINER_MOUNT_POINTS}={placeholder,bd7792acebf4111e865f1011abc57161df00996660d75c1a33d528b950202c0b}
+#@{CONTAINER_IDS}={placeholder,a3d81beff57b965848a6647b6d05847129e798d50fc8990c9c9837170915306d}
+#@{CONTAINER_BOOT_PROFILES}={placeholder,/custom/ubuntu/pivot}
+
+#include <docker-sec/tunables/docker-sec-glob>
+
+profile /usr/bin/docker-runc flags=(attach_disconnected,mediate_deleted,namespace_relative) {
+	pivot_root @{MOUNT_POINT_AUFS_DOCKER}/6de04f66f8e5c39f601c54d1d7ddf89ec6d21acb3be97b2df2f10d6db64649ef/ -> pivot_root_2405803734d8bd4bc1505abc336c7454e68f827052ab7f1302dcbaf588f4b35d,
+	pivot_root @{MOUNT_POINT_AUFS_DOCKER}/6bd9f286ee9af84d1c90bfd697ac344fccbf012b40ff1ee2197952f671e7ba67/ -> pivot_root_f5abe767bc673b057ad7d254e809fc519120baf03c0fa452841e39f78277d368,
+	pivot_root @{MOUNT_POINT_AUFS_DOCKER}/ab4a5ba4b5ada7a4d6dfbd3e889206ebaa5d18c8c44f7f32345012bf4fb5fd95/ -> pivot_root_1f279796a157ea31bc90534ba70788554767730eb75dce59fec90375be364c29,
+	pivot_root @{MOUNT_POINT_AUFS_DOCKER}/9dccc32ab844c0aa39820838d2b27c45c4c4ade91024e85c7ab59796f8e7d200/ -> pivot_root_a42512f549bc4d30afc6d24d6455356bd67b95717f7d754c72ca854033ca0160,
+	pivot_root @{MOUNT_POINT_AUFS_DOCKER}/b6edf47b1c0b97443f012cd4fe850499ded648d782da45b9f54b4ccc46e66f14/ -> pivot_root_1851794543a89b3ebe558b3444b6e02b6d61d4073b263802f64a0291d77e5628,
+	pivot_root @{MOUNT_POINT_AUFS_DOCKER}/058843c1dddab77fa3340978c145ffc504445ec5e916d62c2d21f7313840aa31/ -> pivot_root_d5f4105b1a21604581c6283ef1dbd872e72da6980c33534e376d0503f7f3a205,
+	pivot_root @{MOUNT_POINT_AUFS_DOCKER}/e0eee1ac33ce266fba3768a5be3aafeae9e8d05d898132bab03b6711cc867429/ -> pivot_root_292cedbaaf6641472bb3ac639746e71a91bbe1d8be317b5191f7382eba5c5c6d,
+	pivot_root @{MOUNT_POINT_AUFS_DOCKER}/57bfbf314db6aed55b388bb2fe85446bd5c11912f17ed365f87ac83f8a2f0174/ -> pivot_root_1e2f9c7ef13d3f1fef56257ca65b11070751d1c58126656e54ec7637a6afc26c,
+	pivot_root @{MOUNT_POINT_AUFS_DOCKER}/b55c12711af601c47e971a97dc6e1857e530f32c82494f7b9bb6ce172f6fbc05/ -> pivot_root_e579f2d7a383471f81e1331d64f69f33b3caf694eaf33b06a951ff3b2c804427,
+	
+	#	audit pivot_root -> pivot_root_prof,
+	#	audit pivot_root -> /custom/ubuntu/pivot,
+	pivot_root @{MOUNT_POINT_AUFS_DOCKER}/bd7792acebf4111e865f1011abc57161df00996660d75c1a33d528b950202c0b/ -> /custom/ubuntu/pivot,
+	#TODO: review: docker start/stop of an EXISTING container: tested
+	#audit	capability,
+	capability sys_admin,
+	capability dac_override,
+	capability mknod,
+	capability setuid,
+	capability setgid,
+	capability net_admin,
+	capability sys_ptrace,
+	capability sys_chroot,
+	
+	capability kill,
+	
+	file,
+	
+	network inet stream,
+	network inet6 stream,
+	network netlink raw,
+	network unix dgram,
+	network unix stream,
+	#audit	network,
+	
+	mount options in (rprivate) -> /, #
+	mount @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/ -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/,
+	mount proc -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/proc/,
+	mount tmpfs -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/dev/,
+	mount devpts -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/dev/pts/,
+	mount mqueue -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/dev/mqueue/,
+	mount /var/lib/docker/containers/@{CONTAINER_IDS}/shm/ -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/dev/shm/,
+	mount option=(rw,rprivate) -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/dev/shm/,
+	mount /dev/pts/{[0-9],[0-9][0-9]} -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/dev/console,
+	mount sysfs -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/sys/,
+	mount tmpfs -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/sys/fs/cgroup/,
+	mount option=(ro,nosuid,nodev,noexec,remount,bind) -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/sys/fs/cgroup/,
+	mount /sys/fs/cgroup/@{CGROUP_SUBSYSTEMS}/docker/@{CONTAINER_IDS}/ -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/sys/fs/cgroup/@{CGROUP_SUBSYSTEMS}/,
+	mount option=(ro,nosuid,nodev,noexec,remount,rbind) -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/sys/fs/cgroup/@{CGROUP_SUBSYSTEMS}/,
+	mount /var/lib/docker/containers/@{CONTAINER_IDS}/@{ETC_FILES} -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/etc/@{ETC_FILES},
+	mount option=(rw,rprivate) -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/etc/@{ETC_FILES},
+	
+	#	audit mount,
+
+	
+	
+	
+	
+	mount /home/ubuntu/docker-sec/test.sh -> /var/lib/docker/aufs/mnt/e0eee1ac33ce266fba3768a5be3aafeae9e8d05d898132bab03b6711cc867429/test-file,
+	mount option in (rprivate) -> /var/lib/docker/aufs/mnt/e0eee1ac33ce266fba3768a5be3aafeae9e8d05d898132bab03b6711cc867429/test-file,
+	mount /root/ -> /var/lib/docker/aufs/mnt/57bfbf314db6aed55b388bb2fe85446bd5c11912f17ed365f87ac83f8a2f0174/hosts_rhome/,
+	mount option in (rprivate) -> /var/lib/docker/aufs/mnt/57bfbf314db6aed55b388bb2fe85446bd5c11912f17ed365f87ac83f8a2f0174/hosts_rhome/,
+	mount option = (ro,remount,rbind)  -> /var/lib/docker/aufs/mnt/57bfbf314db6aed55b388bb2fe85446bd5c11912f17ed365f87ac83f8a2f0174/hosts_rhome/,
+	mount /home/ -> /var/lib/docker/aufs/mnt/57bfbf314db6aed55b388bb2fe85446bd5c11912f17ed365f87ac83f8a2f0174/hosts-uhome/,
+	mount option in (rprivate) -> /var/lib/docker/aufs/mnt/57bfbf314db6aed55b388bb2fe85446bd5c11912f17ed365f87ac83f8a2f0174/hosts-uhome/,
+	mount /var/lib/docker/volumes/1bc20fd8cc39d72b6f51ce6eab5dd44db26ff2cda714f0724ce4ca0ab0895769/_data/ -> /var/lib/docker/aufs/mnt/57bfbf314db6aed55b388bb2fe85446bd5c11912f17ed365f87ac83f8a2f0174/data/,
+	
+	ptrace (trace) peer=@{CONTAINER_BOOT_PROFILES},
+	ptrace (trace) peer=@{CONTAINER_RUNTIME_PROFILES},
+	ptrace (trace,tracedby) peer=@{profile_name},
+	ptrace (trace) peer=/usr/bin/docker-containerd-shim,
+	#audit ptrace, #REMOVE!
+	
+	signal (send) peer=@{CONTAINER_BOOT_PROFILES},
+	signal (send) peer=@{CONTAINER_RUNTIME_PROFILES},
+	signal (send,receive) peer=@{profile_name},
+	signal (receive) peer=unconfined,
+	signal (send) peer=/usr/bin/docker-containerd-shim,
+	audit signal (receive) peer=/usr/bin/docker-containerd-shim,
+	
+	#audit	dbus,
+	
+	#	audit	change_profile,
+	change_profile -> @{CONTAINER_RUNTIME_PROFILES},
+	
+	#  child profile seems to break pivot_root rules!
+	}
+	
+	
+	
+	
+

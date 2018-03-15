@@ -1,0 +1,57 @@
+#!/bin/bash
+
+docker_sec_dir=$(dirname "$0")
+source "${docker_sec_dir}/docker-sec_utils.sh"
+
+#echo $#
+#echo $@
+
+if [ -z "$1" ]
+then
+	docker-sec-help
+	return $E_NOARGS
+fi
+
+case $1 in
+	help)
+		docker-sec-help;;
+	run)
+		docker-sec_run $@ ;;
+	start)
+		docker-sec_start $@ ;;
+	stop)
+		docker-sec_stop $@;;
+	create)
+		docker-sec_create $@;;
+	ps)
+		docker-sec_ps $@;;
+	rm)
+		docker-sec_rm $@;;
+	attach)
+		docker-sec_attach $@;;
+	stats)
+		docker-sec_stats $@;;
+	pull)
+		docker-sec_pull $@;;
+	inspect)
+		docker-sec_inspect $@;;
+	volume)
+		docker-sec_volume $@;;
+	train-start)
+		docker-sec_train-start $@;;
+	train-stop)
+		docker-sec_train-stop $@;;
+	info)
+		docker-sec_info $@;;
+	exec)
+		docker-sec_exec $@;;
+	*)
+		echo "This option is not recognized/not yet implemented" 
+		docker-sec-help
+		exit $E_INVARGS;;
+esac
+
+COMMAND=$1
+shift #shifts args! now we can call docker ;)
+
+

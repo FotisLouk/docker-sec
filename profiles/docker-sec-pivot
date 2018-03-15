@@ -1,0 +1,24 @@
+#include <docker-sec/tunables/docker-sec-glob>
+
+profile @@ flags=(attach_disconnected,mediate_deleted,namespace_relative) {
+
+	
+	capability sys_admin,
+	capability setpcap,
+	capability setgid,
+	capability setuid,
+
+	file,
+	network unix stream,
+	mount options=(rw,rprivate) -> @{TEMP_PIVOT_ROOT_OLD},
+	mount /dev/null -> /proc/@{PROC_MOUNT_DEV_NULL},
+	mount /proc/@{PROC_MOUNTS}{,/} -> /proc/@{PROC_MOUNTS}{,/},
+	mount option=(remount) option in (ro,nosuid,nodev,noexec,rbind) -> /proc/@{PROC_MOUNTS}{,/},
+	umount @{TEMP_PIVOT_ROOT_OLD}, 					#/\.pivot_root*/ 
+	ptrace (tracedby) peer=/usr/bin/docker-runc,
+#	pivot_root,
+#	remount,
+	signal (receive) peer=/usr/bin/docker-runc,
+#	dbus,
+	change_profile -> ::,
+}
