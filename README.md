@@ -32,5 +32,5 @@ Finally docker-sec script should be added to PATH environment variable.
 
 Docker-sec is ready to protect your containers!
 
-##License
-Apache License v2.0 (see [LICENSE](LICENSE) file for more)
+## License
+Apache License v2.0 (see [LICENSE](https://github.com/FotisLouk/docker-sec/blob/master/LICENSE.md) file for more information)
