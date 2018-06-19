@@ -38,7 +38,7 @@ case $1 in
 	volume)
 		docker-sec_volume $@;;
 	train-start)
-		docker-sec_train-start $@;;
+		docker-sec_train-start $@;; # &> /dev/null;;
 	train-stop)
 		docker-sec_train-stop $@;;
 	info)

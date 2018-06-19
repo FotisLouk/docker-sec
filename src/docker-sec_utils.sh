@@ -235,13 +235,6 @@ docker-sec_create(){
 docker-sec_run(){
 	check_if_root "docker-sec_run: "	
 
-	for arg do
-		shift
-		[ "$arg" = "-d" ] && continue
-		set -- "$@" "$arg"
-	done
-
-
 	local cont_name=$(docker-sec_create $@ || echo "-1")
 	if [ $? -ne 0 -o "${cont_name}" == "-1" ]; then
 		echo "${bold_text}Docker-sec_run:${normal_text} Something went wrong during container creation" >&2
@@ -363,7 +356,7 @@ docker-sec_train-start(){
         fi
 
 
-	aa-enforce /etc/apparmor.d/docker-sec/runtime/${runtime_prof}
+	aa-enforce /etc/apparmor.d/docker-sec/runtime/${runtime_prof}	
 
 }
 
@@ -390,7 +383,7 @@ docker-sec_train-stop(){
 	fi
 	
 	apply_cap_train "${runtime_prof}"	
-	apply_net_cap_train "${runtime_prof}" 
+	apply_net_cap_train "${runtime_prof}"
 }
 
 docker-sec_start(){
