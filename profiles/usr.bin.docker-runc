@@ -46,6 +46,7 @@ profile /usr/bin/docker-runc flags=(attach_disconnected,mediate_deleted,namespac
 	mount mqueue -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/dev/mqueue/,
 	mount /var/lib/docker/containers/@{CONTAINER_IDS}/shm/ -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/dev/shm/,
 	mount option=(rw,rprivate) -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/dev/shm/,
+	mount option=(rw,rbind) -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/dev/shm/,
 	mount /dev/pts/{[0-9],[0-9][0-9]} -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/dev/console,
 	mount sysfs -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/sys/,
 	mount tmpfs -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/sys/fs/cgroup/,
@@ -54,7 +55,8 @@ profile /usr/bin/docker-runc flags=(attach_disconnected,mediate_deleted,namespac
 	mount option=(ro,nosuid,nodev,noexec,remount,rbind) -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/sys/fs/cgroup/@{CGROUP_SUBSYSTEMS}/,
 	mount /var/lib/docker/containers/@{CONTAINER_IDS}/@{ETC_FILES} -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/etc/@{ETC_FILES},
 	mount option=(rw,rprivate) -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/etc/@{ETC_FILES},
-	
+	mount option=(rw,rbind) -> @{MOUNT_POINT_AUFS_DOCKER}/@{CONTAINER_MOUNT_POINTS}/etc/@{ETC_FILES},
+
 	#	audit mount,
 	mount /var/lib/docker/volumes/3df56e4d78e3082874b376e3832b5e55744862f795cf671b6b0a9f7ed371762b/_data/ -> /var/lib/docker/aufs/mnt/e82a8bc6880954d365bf4af9da07211799ac0dfe1443af98890ee8595417b034/var/www/html/,
 	mount /var/lib/docker/volumes/b795c5c6ce052b36398779c0d09eb44913c34ae06fc12955401d92cf109c2c3f/_data/ -> /var/lib/docker/aufs/mnt/f1b7e7a685dd24644943159fd8379c9799abe58325398a397b4109ee1830df23/var/lib/mysql/,
