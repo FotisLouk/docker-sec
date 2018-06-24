@@ -251,6 +251,32 @@ docker-sec_run(){
 	docker-sec_start start "${cont_name##*$'\n'}"
 }
 
+
+docker-sec_copy-profile(){
+	check_if_root "docker-sec_copy-profile: " ||  return 1
+	
+	shift
+	if [ -z $2 ]; then
+		echo "usage: ${bold_text}docker-sec_copy-profile${normal_text} [--copy-from CONTAINER_NAME] [PROF_PATH] CONTAINER_NAME"
+		exit $E_NOARGS
+	fi
+	
+	PROF_PATH=$1
+	if [ $1 = "--copy-from" ]; then
+		shift
+		container_exists $1 || return 1
+		container_id=$(container_full_id $1)
+		runtime_prof="$(run_time_profile_name $container_id)"
+		PROF_PATH="-r ${runtime_prof}"
+	fi
+	
+	container_exists $2 || return 1
+	container_id=$(container_full_id $2)
+	runtime_prof="$(run_time_profile_name $container_id)"
+	
+	clone_existing_runtime_profile $PROF_PATH ${runtime_prof}
+}
+
 docker-sec_stop(){
 	docker $@ #review
 }

@@ -41,6 +41,8 @@ case $1 in
 		docker-sec_train-start $@;; # &> /dev/null;;
 	train-stop)
 		docker-sec_train-stop $@;;
+	copy-profile)
+		docker-sec_copy-profile $@;;
 	info)
 		docker-sec_info $@;;
 	exec)

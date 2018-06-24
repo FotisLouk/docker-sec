@@ -84,9 +84,29 @@ create_default_runtime(){
 
 }
 
+clone_existing_runtime_profile(){ #used when we want to spint a container using an existing profile
+	check_if_root "clone_existing_runtime_profile:"
+
+	PROF_PATH=$1
+	if [ $1 = "-r" ]; then #-r for relative
+		shift
+		PROF_PATH=$DS_RUNTIME_PATH/$1
+	fi
+	
+	if [ ! -f $PROF_PATH ]; then
+		echo "clone_existing_runtime_profile: Specified file does not exist: $PROF_PATH"
+		exit 1
+	fi
+	
+	cp -i $PROF_PATH $DS_RUNTIME_PATH/$2 #$1 expects full path!
+	sed -i -r "0,/profile .* flags.*/{s/profile .*( flags.*)/profile $2\1/}" $DS_RUNTIME_PATH/$2 #replace the first occurence of 'profile .* flags'
+	aa-enforce "$DS_RUNTIME_PATH/$2"
+
+}
+
 create_logprof_train_runtime(){
 	#usage create_logprof_train_runtime: CONT_RUNTIME_PROF
-	check_if_root "create_logprof_train_runtim:"
+	check_if_root "create_logprof_train_runtime:"
 
 	cp -i ${DS_RUNTIME_DEF}-complain ${DS_RUNTIME_PATH}/$1
 	sed -i "s#docker-sec-default#$1#" $DS_RUNTIME_PATH/$1
