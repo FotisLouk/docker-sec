@@ -30,6 +30,7 @@ docker-sec-help(){
 	echo "    volume       Manage Docker volumes"
 	echo "    train-start  Start train period of container"
 	echo "    train-stop   Stop container's train period and enforce the appropriate profile"
+	echo "    copy-profile Copy existing runtime profile. Can copy file from container"
 	echo "    info         Display docker-sec info and profiles associated with the given container"
 	echo "    exec         Run a command in a running container"
 	echo ;
@@ -42,7 +43,7 @@ container_exists(){
 		echo "usage: ${bold_text}container_exists CONTAINER_NAME|CONTAINER_ID${normal_text}" >&2
 		exit $E_NOARGS
 	fi
-	if [ -n "$(docker ps -a --no-trunc| grep -E [[:space:]]+${1}\(,.*\)?$)" ]; then 	#[[ -n $(docker ps -a | grep -w $1) ]]
+	if [ -n "$(docker ps -a --no-trunc| grep -E \([[:space:]]+${1}\(,.*\)?$\|^${1}[[:space:]]+\))" ]; then 	#[[ -n $(docker ps -a | grep -w $1) ]]
 		debug_out "Container ${bold_text}$1${normal_text} exists!"
 		return 0
 	fi
@@ -55,7 +56,7 @@ container_started(){
                 echo "usage: ${bold_text}container_started CONTAINER_NAME|CONTAINER_ID${normal_text}" >&2
                 exit $E_NOARGS
         fi
-        if [ -n "$(docker ps --no-trunc | grep -E [[:space:]]+${1}\(,.*\)?$)" ]; then  #[[ -n $(docker ps -a | grep -w $1) ]]
+        if [ -n "$(docker ps --no-trunc | grep -E \([[:space:]]+${1}\(,.*\)?$\|^${1}[[:space:]]+\))" ]; then  #[[ -n $(docker ps -a | grep -w $1) ]]
                 debug_out "Container ${bold_text}$1${normal_text} is started!"
                 return 0
         fi
