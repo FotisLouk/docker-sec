@@ -42,11 +42,11 @@ container_exists(){
 		echo "usage: ${bold_text}container_exists CONTAINER_NAME|CONTAINER_ID${normal_text}" >&2
 		exit $E_NOARGS
 	fi
-	if [ -n "$(docker ps -a --no-trunc| grep -w $1)" ]; then 	#[[ -n $(docker ps -a | grep -w $1) ]]
+	if [ -n "$(docker ps -a --no-trunc| grep -E [[:space:]]+${1}\(,.*\)?$)" ]; then 	#[[ -n $(docker ps -a | grep -w $1) ]]
 		debug_out "Container ${bold_text}$1${normal_text} exists!"
 		return 0
 	fi
-	debug_out "Container ${bold_text}$1${normal_text} does ${bold_text}NOT${normal_text} exist"
+	debug_out "Container ${bold_text}$1${normal_text} does ${bold_text}not${normal_text} exist"
 	return 1
 }
 
@@ -55,11 +55,11 @@ container_started(){
                 echo "usage: ${bold_text}container_started CONTAINER_NAME|CONTAINER_ID${normal_text}" >&2
                 exit $E_NOARGS
         fi
-        if [ -n "$(docker ps --no-trunc | grep -w $1)" ]; then  #[[ -n $(docker ps -a | grep -w $1) ]]
+        if [ -n "$(docker ps --no-trunc | grep -E [[:space:]]+${1}\(,.*\)?$)" ]; then  #[[ -n $(docker ps -a | grep -w $1) ]]
                 debug_out "Container ${bold_text}$1${normal_text} is started!"
                 return 0
         fi
-        debug_out "Container ${bold_text}$1${normal_text} is ${bold_text}NOT${normal_text} started"
+        debug_out "Container ${bold_text}$1${normal_text} is ${bold_text}not${normal_text} started"
         return 1
 }
 
@@ -76,7 +76,7 @@ container_full_id(){
                 echo "usage: ${bold_text}container_full_id CONTAINER_NAME${normal_text}" >&2
                 exit $E_NOARGS
         fi
-	docker ps -a --no-trunc |grep -w $1|cut -d' ' -f1
+	docker ps -a --no-trunc |grep -E [[:space:]]+${1}\(,.*\)?$ |cut -d' ' -f1
 }
 
 container_get_name(){
@@ -84,7 +84,7 @@ container_get_name(){
                 echo "usage: ${bold_text}container_get_name CONTAINER_ID${normal_text}" >&2
                 exit $E_NOARGS
         fi
-	docker ps --format "table {{.Names}}\t{{.ID}}" -a --no-trunc |grep -w $1|cut -d' ' -f1
+	docker ps --format "table {{.Names}}\t{{.ID}}" -a --no-trunc |grep -w $1|cut -d' ' -f1 | cut -d',' -f1 #TODO: Check
 }
 
 pivot_root_profile_name(){  #given an id return the name of pivot_profile
