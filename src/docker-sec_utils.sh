@@ -329,6 +329,10 @@ docker-sec_exec(){
 	docker $@
 }
 
+docker-sec_restart(){
+	docker $@
+}
+
 docker-sec_train-start_help(){
 	echo "usage: ${bold_text}docker-sec_train-start${normal_text} [OPTIONS] CONTAINER_NAME"
 	echo
@@ -440,10 +444,10 @@ docker-sec_start(){
 
 docker-sec_rm_help(){
 	echo "usage: docker-sec rm [OPTS] [DOCKER_OPTS] CONTAINER_NAME|CONTAINER_ID${normal_text}";echo
-        echo "Remove container and the associated directories and files";echo
-        echo "Options:";
-        echo "--help: Display help"
-        echo "-p:     Remove Apparmor profiles for this container"
+    echo "Remove container and the associated directories and files";echo
+    echo "Options:";
+    echo "--help: Display help"
+    echo "-p:     Remove Apparmor profiles for this container"
 	echo "-o:     Remove ONLY Apparmor profiles for this container"
 	echo "Docker options:"
 	echo "-f,--force:     Force remove (SIGKILL) container"

@@ -101,7 +101,7 @@ clone_existing_runtime_profile(){ #used when we want to spint a container using 
 		exit 1
 	fi
 	
-	cp -i $PROF_PATH $DS_RUNTIME_PATH/$2 #$1 expects full path!
+	cp $PROF_PATH $DS_RUNTIME_PATH/$2 #$1 expects full path!
 	sed -i -r "0,/profile .* flags.*/{s/profile .*( flags.*)/profile $2\1/}" $DS_RUNTIME_PATH/$2 #replace the first occurence of 'profile .* flags'
 	aa-enforce "$DS_RUNTIME_PATH/$2"
 

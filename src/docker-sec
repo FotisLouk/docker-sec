@@ -47,6 +47,8 @@ case $1 in
 		docker-sec_info $@;;
 	exec)
 		docker-sec_exec $@;;
+	restart)
+		docker-sec_exec $@;;
 	*)
 		echo "This option is not recognized/not yet implemented" 
 		docker-sec-help
