@@ -7,7 +7,7 @@ E_INVARGS=76
 bold_text=$(tput bold)
 normal_text=$(tput sgr0)
 
-DEBUG=1
+DEBUG=0
 INFO=1
 #set -x
 docker_sec_dir=$(dirname "$0")
@@ -122,14 +122,14 @@ pretty_print_container_config(){
 }
 
 debug_out(){
-	if [ $DEBUG ]
+	if [ $DEBUG -eq 1 ]
 	then
 		echo $1 >&2
 	fi
 }
 
 info_out(){
-	if [ $INFO ]
+	if [ $INFO -eq 1 ]
 	then
 		echo $1 >&2
 	fi

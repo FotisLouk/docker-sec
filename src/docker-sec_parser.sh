@@ -13,6 +13,9 @@ DS_PIV_ROOT_DEF=$DS_PROFILE_PATH/docker-sec-pivot
 bold_text=$(tput bold)
 normal_text=$(tput sgr0)
 
+DEBUG=0
+INFO=1
+
 #source docker-sec_utils.sh
 
 add_to_tunable_glob(){
@@ -332,13 +335,13 @@ create_default_profile(){
 	check_if_root "create_default_profile:"	
 
 	local cont_id=$(container_full_id $1)
-		debug_out "Container id $cont_id"
+		info_out "Container id $cont_id"
 	local cont_mount=$(container_mount_point $cont_id)
-		debug_out "Container mount point $cont_mount"
+		info_out "Container mount point $cont_mount"
 	local cont_boot_prof=$(pivot_root_profile_name $cont_id)
-		debug_out "Container boot profile $cont_boot_prof"
+		info_out "Container boot profile $cont_boot_prof"
 	local cont_run_prof=$(run_time_profile_name $cont_id)
-		debug_out "Container runtime profile $cont_run_prof"
+		info_out "Container runtime profile $cont_run_prof"
 	
 #	change_container_profile
 
@@ -357,7 +360,7 @@ create_default_profile(){
 	  (update_docker_runc $cont_mount $cont_boot_prof $1 < $APPARMOR_D_PATH/usr.bin.docker-runc)
 	fi
 
-	debug_out "Profile generation completed! (probably successfully)"
+	info_out "Profile generation completed..."
 }
 
 cleanup_container_profiles(){	
@@ -391,13 +394,13 @@ cleanup_container_profiles(){
 
 	clean_tunables
 	if [ -e ${DS_RUNTIME_PATH}/${cont_run_prof} ]; then
-		prompt_yes_no "Are you sure u want to remove profile: $cont_run_prof ? [Y/N]: " &&
+		prompt_yes_no "Are you sure you want to remove profile: $cont_run_prof ? [Y/N]: " &&
 		aa-disable "${DS_RUNTIME_PATH}/${cont_run_prof}" &&
 		rm "${DS_RUNTIME_PATH}/${cont_run_prof}"
 	fi
 	
 	if [ -e ${DS_PIV_ROOT_PATH}/${cont_boot_prof} ]; then
-		prompt_yes_no "Are you sure u want to remove profile: $cont_boot_prof ? [Y/N]: " &&
+		prompt_yes_no "Are you sure you want to remove profile: $cont_boot_prof ? [Y/N]: " &&
 		aa-disable "${DS_PIV_ROOT_PATH}/${cont_boot_prof}" &&
 		rm "${DS_PIV_ROOT_PATH}/${cont_boot_prof}"
 	fi
